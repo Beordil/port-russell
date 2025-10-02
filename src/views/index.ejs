@@ -1,0 +1,22 @@
+<%- include('partials/header', { title, email: userEmail }) %>
+
+<h1><%= title %></h1>
+<p>Application de gestion des catways et réservations.</p>
+
+<% if (error === 'login') { %>
+  <p class="alert">Veuillez vous connecter pour accéder au tableau de bord.</p>
+<% } else if (error === 'missing') { %>
+  <p class="alert">Email et mot de passe sont requis.</p>
+<% } %>
+
+<form method="POST" action="/login" class="card">
+  <label>Email</label>
+  <input type="email" name="email" placeholder="vous@exemple.com" required />
+
+  <label>Mot de passe</label>
+  <input type="password" name="password" placeholder="••••••••" required />
+
+  <button type="submit">Se connecter</button>
+</form>
+
+<%- include('partials/footer') %>
