@@ -2,14 +2,33 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
+  <!-- FR : Le titre est dynamique, avec fallback "Port Russell"
+       EN : The title is dynamic, fallback to "Port Russell" -->
   <title><%= title || 'Port Russell' %></title>
+  <!-- FR : On lie la feuille de style globale
+       EN : Link the global stylesheet -->
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
+  <!-- -----------------------
+       FR : Barre de navigation
+       EN : Top navigation bar
+       ----------------------- -->
   <header class="topbar">
     <nav class="nav">
+      <!-- FR : Lien vers page d’accueil
+           EN : Link to home page -->
       <a href="/">Accueil</a>
+      <!-- FR : Lien vers le tableau de bord (protégé)
+           EN : Link to dashboard (protected) -->
       <a href="/dashboard">Tableau de bord</a>
+
+      <!-- FR : Si une variable "email" est définie et non vide :
+                - Affiche "Connecté : email"
+                - Affiche le bouton de déconnexion
+           EN : If "email" variable is defined and not empty:
+                - Show "Connected: email"
+                - Show logout button -->
       <% if (typeof email !== 'undefined' && email) { %>
         <span class="user">Connecté : <%= email %></span>
         <a href="/logout">Se déconnecter</a>
@@ -17,8 +36,13 @@
     </nav>
   </header>
 
+  <!-- -----------------------
+       FR : Conteneur principal
+       EN : Main content container
+       ----------------------- -->
   <main class="container">
-    <!-- contenu injecté -->
+    <!-- FR : Le contenu de la page est injecté ici via EJS
+         EN : Page content is injected here via EJS -->
     <%- body %>
   </main>
 </body>

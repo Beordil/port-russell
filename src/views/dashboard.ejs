@@ -1,13 +1,103 @@
-<%- include('partials/header', { title, email }) %>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title><%= title %> — Port Russell</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    /* Un peu de style si tu n'as rien dans /public/styles.css */
+    .topbar { background:#0f172a; color:#fff; padding:12px 16px; }
+    .nav a { color:#fff; margin-right:12px; text-decoration:none; }
+    .container { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+    .grid { display:grid; gap:16px; grid-template-columns: 1fr 1fr; }
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:16px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+    .muted { color:#6b7280; }
+    table { width:100%; border-collapse: collapse; }
+    th, td { padding:10px 12px; border-bottom:1px solid #e5e7eb; text-align:left; }
+    th { background:#f3f4f6; font-weight:600; }
+    .tag { display:inline-block; padding:2px 8px; border-radius:999px; background:#e5f3ff; color:#074c8c; font-size:12px; }
+    .menu ul { padding-left:18px; margin: 8px 0 0; }
+    .menu li { margin: 6px 0; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav">
+      <a href="/">Accueil</a>
+      <a href="/dashboard">Tableau de bord</a>
+      <a href="/docs" target="_blank" rel="noreferrer">Docs API (Swagger)</a>
+    </nav>
+  </header>
 
-<h1>Tableau de bord</h1>
-<p>Bienvenue, <strong><%= email %></strong> 👋</p>
+  <main class="container">
+    <h1>Tableau de bord</h1>
 
-<ul class="menu">
-  <li>Catways — CRUD (à venir)</li>
-  <li>Réservations — CRUD (à venir)</li>
-  <li>Utilisateurs — CRUD (à venir)</li>
-  <li>Doc API — Swagger (à venir)</li>
-</ul>
+    <div class="grid">
+      <section class="card">
+        <h2>Résumé</h2>
+        <p>
+          <strong>Date du jour :</strong>
+          <% 
+            const d = new Date(today);
+            const fmt = new Intl.DateTimeFormat('fr-FR', { dateStyle:'full', timeStyle:'short' }).format(d);
+          %>
+          <span><%= fmt %></span>
+        </p>
+        <p>
+          <strong>Réservations en cours :</strong>
+          <span class="tag"><%= countCurrent %></span>
+        </p>
+        <p class="muted">
+          Connecté en tant que :
+          <%= userEmail ? userEmail : 'invité' %>
+        </p>
+      </section>
 
-<%- include('partials/footer') %>
+      <section class="card menu">
+        <h2>Menu</h2>
+        <ul>
+          <li><a href="/docs" target="_blank" rel="noreferrer">📚 Documentation API (Swagger)</a></li>
+          <li><a href="#" onclick="alert('UI CRUD Catways à venir — utilisez Swagger pour l’instant'); return false;">🛠️ Catways — CRUD (UI à venir)</a></li>
+          <li><a href="#" onclick="alert('UI CRUD Réservations à venir — utilisez Swagger pour l’instant'); return false;">🛠️ Réservations — CRUD (UI à venir)</a></li>
+          <li><a href="#" onclick="alert('UI CRUD Utilisateurs à venir'); return false;">🛠️ Utilisateurs — CRUD (UI à venir)</a></li>
+        </ul>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:16px;">
+      <h2>Réservations en cours</h2>
+
+      <% if (!currentReservations || currentReservations.length === 0) { %>
+        <p class="muted">Aucune réservation en cours pour le moment.</p>
+      <% } else { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Catway</th>
+              <th>Client</th>
+              <th>Bateau</th>
+              <th>Début</th>
+              <th>Fin</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% currentReservations.forEach(r => { %>
+            <tr>
+              <td><%= r.catwayNumber %></td>
+              <td><%= r.clientName %></td>
+              <td><%= r.boatName %></td>
+              <td>
+                <%= new Intl.DateTimeFormat('fr-FR', { dateStyle:'medium' }).format(new Date(r.startDate)) %>
+              </td>
+              <td>
+                <%= new Intl.DateTimeFormat('fr-FR', { dateStyle:'medium' }).format(new Date(r.endDate)) %>
+              </td>
+            </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      <% } %>
+    </section>
+  </main>
+</body>
+</html>

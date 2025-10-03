@@ -1,20 +1,49 @@
+// src/routes/pages.routes.js
 const router = require('express').Router();
-const { requireAuth } = require('../middleware/auth');
+const Reservation = require('../models/Reservation');
 
-// GET / -> page de login (et lien doc plus tard)
+/**
+ * Accueil (login simple + présentation)
+ */
 router.get('/', (req, res) => {
-  const { error } = req.query;
   res.render('index', {
     title: 'Port Russell',
-    error,
-    userEmail: req.cookies?.userEmail || null
   });
 });
 
-// GET /dashboard -> protégé
-router.get('/dashboard', requireAuth, (req, res) => {
-  const email = req.cookies?.userEmail || 'capitaine@port.local';
-  res.render('dashboard', { title: 'Tableau de bord', email });
+/**
+ * Tableau de bord
+ * - Affiche la date du jour
+ * - Liste les réservations en cours (startDate <= now <= endDate)
+ * - Affiche un résumé + liens utiles
+ */
+router.get('/dashboard', async (req, res) => {
+  try {
+    const now = new Date();
+
+    // Reservations "en cours" : start <= now <= end
+    const current = await Reservation.find({
+      startDate: { $lte: now },
+      endDate:   { $gte: now },
+    })
+      .sort({ endDate: 1 })
+      .lean();
+
+    // On injecte un email si tu as un système d’auth (cookie/session)
+    // Ici on tente req.user?.email si existant, sinon null
+    const userEmail = (req.user && req.user.email) ? req.user.email : null;
+
+    res.render('dashboard', {
+      title: 'Tableau de bord',
+      today: now,
+      userEmail,
+      currentReservations: current,
+      countCurrent: current.length,
+    });
+  } catch (err) {
+    console.error('dashboard error:', err);
+    res.status(500).send('Erreur serveur');
+  }
 });
 
 module.exports = router;
