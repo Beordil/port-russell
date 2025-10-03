@@ -2,18 +2,44 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
+  <!-- FR : Le titre de la page est dynamique (si "title" est fourni, sinon "Port Russell")
+       EN : The page title is dynamic (if "title" is provided, otherwise "Port Russell") -->
   <title><%= title || 'Port Russell' %></title>
+
+  <!-- FR : Feuille de style globale (styles.css dans /public)
+       EN : Global stylesheet (styles.css in /public) -->
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
+  <!-- ---------------------------
+       FR : Barre supérieure (navigation)
+       EN : Top navigation bar
+       --------------------------- -->
   <header class="topbar">
     <nav class="nav">
+      <!-- FR : Lien vers page d’accueil
+           EN : Link to home page -->
       <a href="/">Accueil</a>
+
+      <!-- FR : Lien vers tableau de bord (protégé par middleware)
+           EN : Link to dashboard (protected by middleware) -->
       <a href="/dashboard">Tableau de bord</a>
+
+      <!-- FR : Si l’utilisateur est connecté (cookie userEmail dispo) :
+                 - Affiche "Connecté : email"
+                 - Affiche bouton de déconnexion
+           EN : If user is logged in (cookie userEmail available):
+                 - Show "Connected: email"
+                 - Show logout button -->
       <% if (typeof email !== 'undefined' && email) { %>
         <span class="user">Connecté : <%= email %></span>
         <a href="/logout">Se déconnecter</a>
       <% } %>
     </nav>
   </header>
+
+  <!-- ---------------------------
+       FR : Conteneur principal
+       EN : Main content container
+       --------------------------- -->
   <main class="container">

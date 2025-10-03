@@ -1,12 +1,47 @@
+/* FR : Applique une police système par défaut, supprime les marges globales
+   EN : Sets system default font, removes global margins */
 body { font-family: system-ui, Arial, sans-serif; margin:0; }
+
+/* FR : Barre supérieure avec fond bleu foncé et texte blanc
+   EN : Top bar with dark blue background and white text */
 .topbar { background:#0a2540; color:#fff; }
+
+/* FR : Navigation en flex avec espacement entre les éléments, padding interne
+   EN : Navigation bar with flex layout, spacing between items, and padding */
 .nav { display:flex; gap:16px; padding:12px 16px; align-items:center; }
+
+/* FR : Liens de navigation en blanc sans soulignement
+   EN : Navigation links in white without underline */
 .nav a { color:#fff; text-decoration:none; }
+
+/* FR : Zone utilisateur alignée à droite, légèrement transparente
+   EN : User section aligned right with slight transparency */
 .user { margin-left:auto; opacity:.9; }
+
+/* FR : Conteneur central avec largeur max et marges auto pour centrage
+   EN : Central container with max width and auto margins for centering */
 .container { max-width:900px; margin:24px auto; padding:0 16px; }
+
+/* FR : Supprime la marge au-dessus des titres h1
+   EN : Removes top margin for h1 titles */
 h1 { margin-top:0; }
+
+/* FR : Carte (formulaire ou bloc) avec affichage en colonne, bord arrondi et cadre
+   EN : Card (form/form block) with column layout, rounded border and outline */
 .card { display:flex; flex-direction:column; gap:8px; max-width:360px; padding:16px; border:1px solid #ddd; border-radius:8px; }
+
+/* FR : Styles des champs de saisie avec padding et bord arrondi
+   EN : Input fields styled with padding and rounded border */
 .card input { padding:8px; border:1px solid #ccc; border-radius:6px; }
+
+/* FR : Bouton stylisé : fond bleu foncé, texte blanc, arrondi, curseur pointer
+   EN : Styled button: dark blue background, white text, rounded, pointer cursor */
 .card button { padding:10px; border:0; border-radius:6px; background:#0a2540; color:#fff; cursor:pointer; }
+
+/* FR : Message d’erreur en rouge avec marge verticale
+   EN : Error alert in red with vertical margin */
 .alert { color:#b00020; margin:12px 0; }
+
+/* FR : Menu avec interligne augmenté (lisibilité)
+   EN : Menu with increased line-height (readability) */
 .menu { line-height:1.9; }
