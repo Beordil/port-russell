@@ -1,46 +1,49 @@
-require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const cookieParser = require('cookie-parser');
+require('dotenv').config();
 
-const { connectDB } = require('./config/db');            // <— connexion Mongo
+const { connectDB } = require('./config/db');
+
+// Import des routes
 const pagesRoutes = require('./routes/pages.routes');
 const authRoutes = require('./routes/auth.routes');
-const catwaysRoutes = require('./routes/catways.routes'); // <— routes API
+const catwaysRoutes = require('./routes/catways.routes');
+const reservationsRoutes = require('./routes/reservations.routes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// EJS + vues
+// ----- EJS + Vues -----
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Middlewares globaux
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-app.use(cookieParser());
+// ----- Middlewares globaux -----
+app.use(express.urlencoded({ extended: false })); // lecture des formulaires
+app.use(express.json());                          // lecture JSON
+app.use(cookieParser());                          // cookies
 
-// Statique
+// ----- Fichiers statiques -----
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Pages HTML
+// ----- Routes -----
 app.use('/', pagesRoutes);
 app.use('/', authRoutes);
+app.use('/api', catwaysRoutes);
+app.use('/api', reservationsRoutes);
 
-// API JSON
-app.use('/api', catwaysRoutes); // => /api/catways, /api/catways/:id
-
-// 404 simple
+// ----- 404 -----
 app.use((req, res) => res.status(404).send('Page introuvable'));
 
-// Démarrage APRÈS connexion DB
+// ----- Connexion DB + lancement serveur -----
 connectDB(process.env.MONGODB_URI)
   .then(() => {
     app.listen(PORT, () => {
+      console.log('✅ MongoDB connecté');
       console.log(`✅ Serveur démarré : http://localhost:${PORT}`);
     });
   })
-  .catch((e) => {
-    console.error('❌ Erreur MongoDB :', e.message);
+  .catch((err) => {
+    console.error('❌ Erreur MongoDB :', err.message);
     process.exit(1);
   });
