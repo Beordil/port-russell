@@ -71,8 +71,7 @@ port-russell/
 ├── README.md # Documentation (ce fichier)
 └── seed_users.js / seed_catways.js # Scripts d’initialisation
 
-yaml
-Copier le code
+
 
 ---
 
