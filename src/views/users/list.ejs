@@ -1,47 +1,99 @@
+<!-- =========================================================
+     FR : Page listant tous les utilisateurs (UI Admin)
+     EN : Page listing all users (Admin UI)
+     ========================================================= -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
+  <!-- =========================================================
+       FR : Titre de la page
+       EN : Page title
+       ========================================================= -->
   <title>Utilisateurs — Port Russell</title>
+
+  <!-- =========================================================
+       FR : Feuille de style principale (styles.css)
+       EN : Main stylesheet (styles.css)
+       ========================================================= -->
   <link rel="stylesheet" href="/styles.css" />
 </head>
+
 <body>
+  <!-- =========================================================
+       FR : Barre de navigation principale en haut de page
+       EN : Main top navigation bar
+       ========================================================= -->
   <header class="topbar">
     <nav class="nav">
-      <a href="/">Accueil</a>
-      <a href="/dashboard">Tableau de bord</a>
-      <a href="/docs" target="_blank" rel="noreferrer">Docs API</a>
+      <a href="/">Accueil</a>                      <!-- FR : Lien vers l'accueil / EN : Link to home -->
+      <a href="/dashboard">Tableau de bord</a>    <!-- FR : Lien vers le dashboard / EN : Link to dashboard -->
+      <a href="/docs" target="_blank" rel="noreferrer">Docs API</a> <!-- FR : Ouvre Swagger Docs / EN : Opens API docs -->
     </nav>
   </header>
 
+  <!-- =========================================================
+       FR : Contenu principal de la page
+       EN : Main page content
+       ========================================================= -->
   <main class="container">
+    <!-- FR : Titre principal / EN : Main heading -->
     <h1>Utilisateurs</h1>
 
-    <p><a class="btn" href="/ui/users/new">+ Nouvel utilisateur</a></p>
+    <!-- =========================================================
+         FR : Bouton pour créer un nouvel utilisateur
+         EN : Button to create a new user
+         ========================================================= -->
+    <p>
+      <a class="btn" href="/ui/users/new">+ Nouvel utilisateur</a>
+    </p>
 
+    <!-- =========================================================
+         FR : Tableau listant les utilisateurs
+         EN : Table displaying all users
+         ========================================================= -->
     <table class="table">
       <thead>
         <tr>
-          <th>Nom</th>
-          <th>Email</th>
-          <th>Rôle</th>
-          <th style="width:140px;"></th>
+          <th>Nom</th>       <!-- FR : Nom de l’utilisateur / EN : User name -->
+          <th>Email</th>     <!-- FR : Adresse e-mail / EN : Email address -->
+          <th>Rôle</th>      <!-- FR : Rôle (user/admin) / EN : Role (user/admin) -->
+          <th style="width:140px;"></th> <!-- FR : Colonne d’actions / EN : Actions column -->
         </tr>
       </thead>
+
       <tbody>
-      <% (items || []).forEach(u => { %>
-        <tr>
-          <td><%= u.name %></td>
-          <td><%= u.email %></td>
-          <td><%= u.role %></td>
-          <td>
-            <a href="/ui/users/<%= u._id %>/edit">Modifier</a>
-            <form action="/ui/users/<%= u._id %>/delete" method="post" style="display:inline">
-              <button type="submit" onclick="return confirm('Supprimer ?')">Supprimer</button>
-            </form>
-          </td>
-        </tr>
-      <% }) %>
+        <!-- =====================================================
+             FR : Boucle sur chaque utilisateur reçu du contrôleur
+             EN : Loop over each user provided by the controller
+             ===================================================== -->
+        <% (items || []).forEach(u => { %>
+          <tr>
+            <!-- FR : Données utilisateur / EN : User data -->
+            <td><%= u.name %></td>
+            <td><%= u.email %></td>
+            <td><%= u.role %></td>
+
+            <!-- =================================================
+                 FR : Liens d’action : modifier et supprimer
+                 EN : Action links: edit and delete
+                 ================================================= -->
+            <td>
+              <!-- FR : Lien d’édition / EN : Edit link -->
+              <a href="/ui/users/<%= u._id %>/edit">Modifier</a>
+
+              <!-- FR : Formulaire de suppression / EN : Delete form -->
+              <form action="/ui/users/<%= u._id %>/delete" 
+                    method="post" 
+                    style="display:inline">
+                <button type="submit" 
+                        onclick="return confirm('Supprimer ?')">
+                  Supprimer
+                </button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
       </tbody>
     </table>
   </main>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <!-- 
+    FR : Titre dynamique de la page
+    EN : Dynamic page title 
+  -->
+  <title><%= title %></title>
+
+  <!-- 
+    FR : Feuille de style principale du site 
+    EN : Main site stylesheet 
+  -->
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+
+<body>
+  <!-- =========================================================
+       FR : Barre de navigation supérieure
+       EN : Top navigation bar
+       ========================================================= -->
+  <header class="topbar">
+    <nav class="nav">
+      <!-- Liens de navigation principaux -->
+      <!-- Main navigation links -->
+      <a href="/">Accueil</a>
+      <a href="/dashboard">Tableau de bord</a>
+      <a href="/docs" target="_blank" rel="noreferrer">Docs API (Swagger)</a>
+    </nav>
+  </header>
+
+  <!-- =========================================================
+       FR : Contenu principal de la page
+       EN : Main content area
+       ========================================================= -->
+  <main class="container">
+    <!-- FR : Titre principal de la page / EN : Main page title -->
+    <h1>Catways</h1>
+
+    <!-- FR : Message d’erreur éventuel / EN : Optional error message -->
+    <% if (error) { %>
+      <div class="alert"><%= error %></div>
+    <% } %>
+
+    <!-- FR : Lien pour ajouter un nouveau catway / EN : Link to add new catway -->
+    <p>
+      <a class="btn" href="/ui/catways/new">+ Nouveau catway</a>
+    </p>
+
+    <!-- =========================================================
+         FR : Tableau listant tous les catways existants
+         EN : Table displaying all existing catways
+         ========================================================= -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Type</th>
+          <th>État</th>
+          <th style="width:180px"></th> <!-- Colonne pour les actions -->
+        </tr>
+      </thead>
+
+      <tbody>
+      <% (items || []).forEach(c => { %>
+        <tr>
+          <!-- FR : Numéro du catway / EN : Catway number -->
+          <td><strong><%= c.catwayNumber %></strong></td>
+
+          <!-- FR : Type de catway / EN : Catway type -->
+          <td><%= c.catwayType %></td>
+
+          <!-- FR : État du catway / EN : Catway state -->
+          <td><%= c.catwayState %></td>
+
+          <!-- FR : Actions disponibles (modifier/supprimer)
+               EN : Available actions (edit/delete) -->
+          <td>
+            <!-- Lien pour modifier un catway / Edit link -->
+            <a class="link" href="/ui/catways/<%= c.catwayNumber %>/edit">Modifier</a>
+
+            <!-- Formulaire de suppression / Delete form -->
+            <form
+              action="/ui/catways/<%= c.catwayNumber %>/delete"
+              method="post"
+              style="display:inline"
+            >
+              <button
+                class="btn-outline"
+                type="submit"
+                onclick="return confirm('Supprimer le catway #<%= c.catwayNumber %> ?')"
+              >
+                Supprimer
+              </button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>

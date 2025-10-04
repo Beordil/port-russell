@@ -1,97 +1,141 @@
+<!-- =========================================================
+     FR : Tableau de bord principal
+     EN : Main Dashboard page
+     ========================================================= -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <title><%= title %> — Port Russell</title>
+
+  <!-- FR : Titre de la page / EN : Page title -->
+  <title>Tableau de bord — Port Russell</title>
+
+  <!-- FR : Feuille de style principale / EN : Main stylesheet -->
   <link rel="stylesheet" href="/styles.css" />
-  <style>
-    .topbar { background:#0f172a; color:#fff; padding:12px 16px; }
-    .nav a { color:#fff; margin-right:12px; text-decoration:none; }
-    .container { max-width: 960px; margin: 24px auto; padding: 0 16px; }
-    .grid { display:grid; gap:16px; grid-template-columns: 1fr 1fr; }
-    .card { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:16px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
-    .muted { color:#6b7280; }
-    .tag { display:inline-block; padding:2px 8px; border-radius:999px; background:#e5f3ff; color:#074c8c; font-size:12px; }
-    table { width:100%; border-collapse: collapse; }
-    th, td { padding:10px 12px; border-bottom:1px solid #e5e7eb; text-align:left; }
-    th { background:#f3f4f6; font-weight:600; }
-    .menu ul { padding-left:18px; margin: 8px 0 0; }
-    .menu li { margin: 6px 0; }
-  </style>
 </head>
+
 <body>
+  <!-- =========================================================
+       FR : En-tête (Header)
+       EN : Header (Top bar)
+       ========================================================= -->
   <header class="topbar">
     <nav class="nav">
-      <a href="/">Accueil</a>
-      <a href="/dashboard">Tableau de bord</a>
-      <a href="/docs" target="_blank" rel="noreferrer">Docs API (Swagger)</a>
+      <!-- Liens de navigation principaux -->
+      <a href="/">Accueil</a> <!-- FR : Retour accueil / EN : Back to home -->
+      <a href="/dashboard">Tableau de bord</a> <!-- FR : Page actuelle / EN : Current dashboard page -->
+      <a href="/docs" target="_blank" rel="noreferrer">Docs API (Swagger)</a> <!-- FR : Lien vers la documentation API / EN : Link to API docs -->
+
+      <!-- FR : Espace flexible pour pousser la zone utilisateur à droite
+           EN : Spacer pushes the user info and logout button to the right -->
+      <div class="nav-spacer"></div>
+
+      <!-- FR : Zone utilisateur connectée / EN : Logged-in user area -->
+      <span class="nav-user">
+        <%= userEmail ? `Connecté : ${userEmail}` : 'Connecté : invité' %>
+      </span>
+
+      <!-- FR : Bouton de déconnexion / EN : Logout button -->
+      <a class="btn-logout" href="/logout">Se déconnecter</a>
     </nav>
   </header>
 
-  <main class="container">
-    <h1>Tableau de bord</h1>
+  <!-- =========================================================
+       FR : Contenu principal du tableau de bord
+       EN : Main dashboard content
+       ========================================================= -->
+  <main class="dashboard-main">
+    <h1 class="dash-title">Tableau de bord</h1>
 
-    <div class="grid">
-      <section class="card">
+    <!-- =========================================================
+         FR : Disposition en grille (résumé + menu + tableau)
+         EN : Grid layout (summary + quick menu + table)
+         ========================================================= -->
+    <section class="dash-grid">
+
+      <!-- =======================
+           FR : Bloc résumé
+           EN : Summary card
+           ======================= -->
+      <div class="dash-card">
         <h2>Résumé</h2>
-        <p>
-          <strong>Date du jour :</strong>
-          <% 
-            const d = new Date(today);
-            const fmt = new Intl.DateTimeFormat('fr-FR', { dateStyle:'full', timeStyle:'short' }).format(d);
-          %>
-          <span><%= fmt %></span>
+
+        <!-- FR : Date et heure actuelles / EN : Current date and time -->
+        <p class="dash-date">
+          <% const d = new Date(today); %>
+          <%= new Intl.DateTimeFormat('fr-FR', { dateStyle:'full', timeStyle:'short' }).format(d) %>
         </p>
+
+        <p class="dash-muted">
+          Bienvenue sur le système de gestion des catways et réservations.
+          <!-- EN : Welcome message -->
+        </p>
+
         <p>
           <strong>Réservations en cours :</strong>
-          <span class="tag"><%= countCurrent %></span>
+          <span class="pill"><%= countCurrent %></span>
+          <!-- FR : Compteur dynamique des réservations actives -->
+          <!-- EN : Dynamic counter of active reservations -->
         </p>
-        <p class="muted">
-          Connecté en tant que :
-          <%= userEmail ? userEmail : 'invité' %>
-        </p>
-      </section>
+      </div>
 
-      <section class="card menu">
-        <h2>Menu</h2>
-        <ul>
-          <li><a href="/docs" target="_blank" rel="noreferrer">📚 Documentation API (Swagger)</a></li>
-          <li><a href="/ui/catways">🛶 Catways — CRUD (UI)</a></li>
-          <li><a href="/ui/reservations">📆 Réservations — CRUD (UI)</a></li>
-          <li><a href="/ui/users">👤 Utilisateurs — CRUD (UI)</a></li>
+      <!-- =======================
+           FR : Bloc menu rapide
+           EN : Quick access menu card
+           ======================= -->
+      <div class="dash-card">
+        <h2>Menu rapide</h2>
+        <ul class="quick-links">
+          <li>🛠️ <a class="link-quiet" href="/ui/catways">Gérer les Catways</a></li>
+          <li>📅 <a class="link-quiet" href="/ui/reservations">Gérer les Réservations</a></li>
+          <li>👤 <a class="link-quiet" href="/ui/users">Gérer les Utilisateurs</a></li>
+          <li>📚 <a class="link-quiet" href="/docs" target="_blank" rel="noreferrer">Documentation API</a></li>
         </ul>
-      </section>
-    </div>
+      </div>
 
-    <section class="card" style="margin-top:16px;">
-      <h2>Réservations en cours</h2>
+      <!-- =======================
+           FR : Bloc tableau des réservations en cours
+           EN : Current reservations table card
+           ======================= -->
+      <div class="dash-card dash-span-2">
+        <h2>Réservations en cours</h2>
 
-      <% if (!currentReservations || currentReservations.length === 0) { %>
-        <p class="muted">Aucune réservation en cours pour le moment.</p>
-      <% } else { %>
-        <table>
-          <thead>
-            <tr>
-              <th>Catway</th>
-              <th>Client</th>
-              <th>Bateau</th>
-              <th>Début</th>
-              <th>Fin</th>
-            </tr>
-          </thead>
-          <tbody>
-          <% currentReservations.forEach(r => { %>
-            <tr>
-              <td><%= r.catwayNumber %></td>
-              <td><%= r.clientName %></td>
-              <td><%= r.boatName %></td>
-              <td><%= new Date(r.startDate).toLocaleDateString('fr-FR') %></td>
-              <td><%= new Date(r.endDate).toLocaleDateString('fr-FR') %></td>
-            </tr>
-          <% }) %>
-          </tbody>
-        </table>
-      <% } %>
+        <!-- FR : Si aucune réservation active / EN : If no active reservations -->
+        <% if (!currentReservations || currentReservations.length === 0) { %>
+          <p class="dash-muted">Aucune réservation en cours.</p>
+
+        <% } else { %>
+          <!-- FR : Sinon, afficher le tableau des réservations / EN : Otherwise display table -->
+          <div class="table-wrapper">
+            <table class="dash-table">
+              <thead>
+                <tr>
+                  <th>Catway</th>
+                  <th>Client</th>
+                  <th>Bateau</th>
+                  <th>Début</th>
+                  <th>Fin</th>
+                </tr>
+              </thead>
+
+              <tbody>
+              <% currentReservations.forEach(r => { %>
+                <tr>
+                  <td><%= r.catwayNumber %></td>
+                  <td><%= r.clientName %></td>
+                  <td><%= r.boatName %></td>
+
+                  <!-- FR : Dates formatées proprement en français
+                       EN : Nicely formatted French dates -->
+                  <td><%= new Intl.DateTimeFormat('fr-FR', { dateStyle:'medium' }).format(new Date(r.startDate)) %></td>
+                  <td><%= new Intl.DateTimeFormat('fr-FR', { dateStyle:'medium' }).format(new Date(r.endDate)) %></td>
+                </tr>
+              <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
     </section>
   </main>
 </body>

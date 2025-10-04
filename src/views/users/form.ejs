@@ -1,40 +1,103 @@
+<!-- =========================================================
+     FR : Page de création / modification d’un catway
+     EN : Page for creating or editing a catway
+     ========================================================= -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <title><%= title %> — Port Russell</title>
+  <!-- =========================================================
+       FR : Le titre de la page est défini dynamiquement depuis EJS
+       EN : The page title is set dynamically using EJS
+       ========================================================= -->
+  <title><%= title %></title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
+
 <body>
+  <!-- =========================================================
+       FR : Barre de navigation supérieure
+       EN : Top navigation bar
+       ========================================================= -->
   <header class="topbar">
     <nav class="nav">
-      <a href="/">Accueil</a>
-      <a href="/dashboard">Tableau de bord</a>
-      <a href="/docs" target="_blank" rel="noreferrer">Docs API</a>
+      <a href="/">Accueil</a>             <!-- FR : lien accueil / EN : home link -->
+      <a href="/dashboard">Tableau de bord</a>  <!-- FR : lien dashboard / EN : dashboard link -->
+      <a href="/ui/catways">← Retour liste</a>   <!-- FR : retour vers la liste des catways / EN : back to catways list -->
     </nav>
   </header>
 
+  <!-- =========================================================
+       FR : Conteneur principal
+       EN : Main container
+       ========================================================= -->
   <main class="container">
+    <!-- FR : Titre principal dynamique / EN : Dynamic main title -->
     <h1><%= title %></h1>
 
+    <!-- =========================================================
+         FR : Message d’erreur (si une erreur est passée à la vue)
+         EN : Error message (if an error is passed to the view)
+         ========================================================= -->
     <% if (error) { %>
-      <p class="alert"><%= error %></p>
+      <div class="alert"><%= error %></div>
     <% } %>
 
-    <form method="post" action="<%= (mode === 'create') ? '/ui/users/new' : ('/ui/users/' + item._id + '/update') %>" class="card" style="max-width:420px;">
-      <label>Nom</label>
-      <input type="text" name="name" value="<%= item.name || '' %>" required />
+    <!-- =========================================================
+         FR : Formulaire unique utilisé à la fois pour la création
+              et la modification d’un catway
+         EN : Single form used for both creating and editing a catway
+         ========================================================= -->
+    <form class="card" 
+          method="post" 
+          action="<%= (mode === 'create') 
+                      ? '/ui/catways/new' 
+                      : ('/ui/catways/' + item.catwayNumber + '/update') %>">
 
-      <label>Email</label>
-      <input type="email" name="email" value="<%= item.email || '' %>" required />
+      <!-- =========================================================
+           FR : Champ Numéro de catway (lecture seule en mode édition)
+           EN : Catway number field (readonly in edit mode)
+           ========================================================= -->
+      <div>
+        <label>Numéro</label>
+        <input type="number" 
+               name="catwayNumber" 
+               value="<%= item.catwayNumber %>" 
+               <%= mode === 'edit' ? 'readonly' : '' %> 
+               required />
+      </div>
 
-      <label>Rôle</label>
-      <select name="role">
-        <option value="user"  <%= item.role === 'user'  ? 'selected' : '' %>>user</option>
-        <option value="admin" <%= item.role === 'admin' ? 'selected' : '' %>>admin</option>
-      </select>
+      <!-- =========================================================
+           FR : Champ Type (sélecteur court/long)
+           EN : Type field (dropdown short/long)
+           ========================================================= -->
+      <div>
+        <label>Type</label>
+        <select name="catwayType">
+          <option value="short" <%= item.catwayType === 'short' ? 'selected' : '' %>>short</option>
+          <option value="long"  <%= item.catwayType === 'long'  ? 'selected' : '' %>>long</option>
+        </select>
+      </div>
 
-      <button type="submit"><%= (mode === 'create') ? 'Créer' : 'Mettre à jour' %></button>
+      <!-- =========================================================
+           FR : Champ État du catway (ex: “bon état”, “en réparation”)
+           EN : Catway state field (ex: “good condition”, “under repair”)
+           ========================================================= -->
+      <div>
+        <label>État</label>
+        <input type="text" 
+               name="catwayState" 
+               value="<%= item.catwayState %>" 
+               required />
+      </div>
+
+      <!-- =========================================================
+           FR : Bouton d’action (Créer / Mettre à jour)
+           EN : Action button (Create / Update)
+           ========================================================= -->
+      <button type="submit">
+        <%= (mode === 'create') ? 'Créer' : 'Mettre à jour' %>
+      </button>
     </form>
   </main>
 </body>

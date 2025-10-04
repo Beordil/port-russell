@@ -1,35 +1,127 @@
-<%- include('header', { title: 'Catways — CRUD' }) %>
-<header class="topbar">
-  <nav class="nav">
-    <a href="/">Accueil</a>
-    <a href="/dashboard">Tableau de bord</a>
-    <a href="/docs" target="_blank" rel="noreferrer">Docs API</a>
-    <% if (email) { %><span class="user">Connecté : <%= email %></span><a href="/logout">Se déconnecter</a><% } %>
-  </nav>
-</header>
+<!-- =========================================================
+     FR : Page de liste des catways (CRUD visuel)
+     EN : Catways list page (visual CRUD)
+     ========================================================= -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  
+  <!-- =========================================================
+       FR : Titre de la page
+       EN : Page title
+       ========================================================= -->
+  <title>Catways — CRUD</title>
 
-<main class="container">
-  <h1>Catways</h1>
-  <p><a class="btn" href="/ui/catways/new">+ Nouveau catway</a></p>
+  <!-- FR : Feuille de style principale / EN : Main stylesheet -->
+  <link rel="stylesheet" href="/styles.css" />
+</head>
 
-  <table class="table">
-    <thead>
-      <tr><th>#</th><th>Type</th><th>État</th><th></th></tr>
-    </thead>
-    <tbody>
-      <% (items || []).forEach(c => { %>
-        <tr>
-          <td><strong><%= c.catwayNumber %></strong></td>
-          <td><%= c.catwayType %></td>
-          <td><%= c.catwayState %></td>
-          <td>
-            <a href="/ui/catways/<%= c.catwayNumber %>/edit">Modifier</a>
-            <form action="/ui/catways/<%= c.catwayNumber %>/delete" method="post" style="display:inline">
-              <button type="submit" onclick="return confirm('Supprimer ?')">Supprimer</button>
-            </form>
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-</main>
+<body>
+  <!-- =========================================================
+       FR : Barre de navigation supérieure
+       EN : Top navigation bar
+       ========================================================= -->
+  <header class="topbar">
+    <nav class="nav">
+      <!-- Liens principaux -->
+      <a href="/">Accueil</a> <!-- FR : Page d’accueil / EN : Home page -->
+      <a href="/dashboard">Tableau de bord</a> <!-- FR : Tableau de bord / EN : Dashboard -->
+      <a href="/docs" target="_blank" rel="noreferrer">Docs API (Swagger)</a> <!-- FR : Lien docs Swagger / EN : Swagger API docs -->
+
+      <!-- Espace flexible pour pousser la déconnexion à droite -->
+      <div class="nav-spacer"></div>
+
+      <!-- Bouton de déconnexion -->
+      <a class="btn-logout" href="/logout">Se déconnecter</a>
+    </nav>
+  </header>
+
+  <!-- =========================================================
+       FR : Contenu principal de la page
+       EN : Main page content
+       ========================================================= -->
+  <main class="dashboard-main">
+    <!-- FR : Titre principal / EN : Page main title -->
+    <h1 class="dash-title">Catways</h1>
+
+    <!-- =========================================================
+         FR : Barre d’actions (créer un nouveau catway)
+         EN : Action bar (create a new catway)
+         ========================================================= -->
+    <div class="actions-bar">
+      <a class="btn btn-primary" href="/ui/catways/new">+ Nouveau catway</a>
+    </div>
+
+    <!-- =========================================================
+         FR : Tableau affichant la liste des catways
+         EN : Table displaying the list of catways
+         ========================================================= -->
+    <section class="dash-card">
+      <div class="table-wrapper">
+        <table class="dash-table dash-table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Type</th>
+              <th>État</th>
+              <th style="width:180px;">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <!-- =====================================================
+                 FR : Si aucun catway n’existe, afficher un message vide
+                 EN : If no catways exist, show an empty message
+                 ===================================================== -->
+            <% if (!catways || catways.length === 0) { %>
+              <tr>
+                <td colspan="4" class="dash-muted">Aucun catway à afficher.</td>
+              </tr>
+            <% } else { %>
+              <!-- =====================================================
+                   FR : Boucle sur tous les catways
+                   EN : Loop through all catways
+                   ===================================================== -->
+              <% catways.forEach(c => { %>
+                <tr>
+                  <!-- Numéro -->
+                  <td><strong><%= c.catwayNumber %></strong></td>
+
+                  <!-- Type avec badge de couleur -->
+                  <td>
+                    <span class="badge <%= c.catwayType === 'long' ? 'badge-green' : 'badge-blue' %>">
+                      <%= c.catwayType %>
+                    </span>
+                  </td>
+
+                  <!-- État -->
+                  <td><%= c.catwayState %></td>
+
+                  <!-- =====================================================
+                       FR : Actions : Modifier / Supprimer
+                       EN : Actions: Edit / Delete
+                       ===================================================== -->
+                  <td>
+                    <!-- Lien Modifier -->
+                    <a class="btn btn-sm" href="/ui/catways/<%= c.catwayNumber %>/edit">
+                      Modifier
+                    </a>
+
+                    <!-- Lien Supprimer avec confirmation -->
+                    <a class="btn btn-sm btn-danger"
+                       href="/ui/catways/<%= c.catwayNumber %>/delete"
+                       onclick="return confirm('Supprimer le catway n°<%= c.catwayNumber %> ?');">
+                      Supprimer
+                    </a>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

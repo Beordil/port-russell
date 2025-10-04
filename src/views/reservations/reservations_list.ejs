@@ -1,0 +1,113 @@
+<!-- =========================================================
+     FR : Inclusion du header (barre de navigation principale)
+     EN : Include the main header (top navigation bar)
+     ========================================================= -->
+<%- include('../partials/header') %>
+
+<!-- =========================================================
+     FR : Titre principal de la page
+     EN : Main page title
+     ========================================================= -->
+<h1>Réservations</h1>
+
+<!-- =========================================================
+     FR : Bouton pour créer une nouvelle réservation
+     EN : Button to create a new reservation
+     ========================================================= -->
+<p>
+  <a class="btn" href="/ui/reservations/new">+ Nouvelle réservation</a>
+</p>
+
+<!-- =========================================================
+     FR : Tableau principal affichant les réservations
+     EN : Main table displaying all reservations
+     ========================================================= -->
+<table class="table">
+  <thead>
+    <tr>
+      <th>#</th>               <!-- FR : index de la ligne / EN : row index -->
+      <th>Catway</th>          <!-- FR : numéro du catway / EN : catway number -->
+      <th>Client</th>          <!-- FR : nom du client / EN : client name -->
+      <th>Bateau</th>          <!-- FR : nom du bateau / EN : boat name -->
+      <th>Début</th>           <!-- FR : date de début / EN : start date -->
+      <th>Fin</th>             <!-- FR : date de fin / EN : end date -->
+      <th>Actions</th>         <!-- FR : boutons d'action / EN : action buttons -->
+    </tr>
+  </thead>
+
+  <tbody>
+  <% if (!items || items.length === 0) { %>
+    <!-- =========================================================
+         FR : Si aucune réservation n’est trouvée, on affiche un message
+         EN : If no reservation is found, display a placeholder message
+         ========================================================= -->
+    <tr>
+      <td colspan="7" class="muted">Aucune réservation.</td>
+    </tr>
+  <% } else { %>
+    <!-- =========================================================
+         FR : Sinon, on boucle sur toutes les réservations
+         EN : Otherwise, iterate through all reservations
+         ========================================================= -->
+    <% items.forEach((r, idx) => { %>
+      <tr>
+        <!-- FR : Numérotation automatique (idx + 1) -->
+        <!-- EN : Automatic numbering (idx + 1) -->
+        <td><%= idx + 1 %></td>
+
+        <!-- FR : Numéro du catway -->
+        <!-- EN : Catway number -->
+        <td><%= r.catwayNumber %></td>
+
+        <!-- FR : Nom du client -->
+        <!-- EN : Client name -->
+        <td><%= r.clientName %></td>
+
+        <!-- FR : Nom du bateau -->
+        <!-- EN : Boat name -->
+        <td><%= r.boatName %></td>
+
+        <!-- FR : Date de début formatée (locale française) -->
+        <!-- EN : Start date formatted in French locale -->
+        <td><%= new Date(r.startDate).toLocaleDateString('fr-FR') %></td>
+
+        <!-- FR : Date de fin formatée (locale française) -->
+        <!-- EN : End date formatted in French locale -->
+        <td><%= new Date(r.endDate).toLocaleDateString('fr-FR') %></td>
+
+        <!-- =========================================================
+             FR : Cellule contenant les boutons Modifier et Supprimer
+             EN : Cell containing Edit and Delete buttons
+             ========================================================= -->
+        <td class="actions">
+          <!-- FR : Lien vers le formulaire d’édition -->
+          <!-- EN : Link to the edit form -->
+          <a class="link-clean" href="/ui/reservations/<%= r._id %>/edit">Modifier</a>
+
+          <!-- FR : Formulaire de suppression -->
+          <!-- EN : Delete form -->
+          <form 
+            method="POST" 
+            action="/ui/reservations/<%= r._id %>/delete" 
+            style="display:inline;"
+          >
+            <button 
+              class="btn btn-danger" 
+              type="submit" 
+              onclick="return confirm('Supprimer cette réservation ?');"
+            >
+              Supprimer
+            </button>
+          </form>
+        </td>
+      </tr>
+    <% }) %>
+  <% } %>
+  </tbody>
+</table>
+
+<!-- =========================================================
+     FR : Inclusion du pied de page (fermeture du <main> et du <body>)
+     EN : Include footer partial (closes <main> and <body>)
+     ========================================================= -->
+<%- include('../partials/footer') %>

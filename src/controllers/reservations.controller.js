@@ -1,18 +1,25 @@
+// -----------------------------------------------------------------------------
 // src/controllers/reservations.controller.js
-// -----------------------------------------------------------
-// Reservations controller (FR/EN)
-// - Works for flat routes  : /api/reservations...
-// - Works for nested alias : /api/catways/:id/reservations...
+// -----------------------------------------------------------------------------
+// FR : Contrôleur pour gérer les réservations (API).
+// EN : Controller to handle reservations (API).
 //
-// Notes:
-// - If a catwayNumber is provided via route param `:id`, it is used.
-// - Overlap check: a reservation overlaps if (startA <= endB) && (endA >= startB).
-// -----------------------------------------------------------
+// - Fonctionne avec des routes simples  : /api/reservations...
+// - Fonctionne avec des routes imbriquées : /api/catways/:id/reservations...
+//
+// Notes :
+// - Si un paramètre `:id` est fourni dans l’URL, il est interprété comme le numéro de catway.
+// - Vérification de chevauchement : une réservation se chevauche si
+//   (startA <= endB) && (endA >= startB).
+// -----------------------------------------------------------------------------
 
 const Reservation = require('../models/Reservation');
 const { validationResult } = require('express-validator');
 
-// Small helper to standardize validation errors
+// -----------------------------------------------------------------------------
+// FR : Petite fonction utilitaire pour envoyer les erreurs de validation
+// EN : Small helper to send validation errors consistently
+// -----------------------------------------------------------------------------
 function sendValidationErrors(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -21,11 +28,14 @@ function sendValidationErrors(req, res) {
   return null;
 }
 
+// -----------------------------------------------------------------------------
 // GET /api/reservations
 // GET /api/catways/:id/reservations
+// FR : Récupère toutes les réservations (optionnellement filtrées par catway).
+// EN : Fetch all reservations (optionally filtered by catway).
+// -----------------------------------------------------------------------------
 exports.list = async (req, res) => {
   try {
-    // if nested route, filter by catwayNumber
     const filter = {};
     if (req.params && req.params.id) {
       filter.catwayNumber = parseInt(req.params.id, 10);
@@ -39,8 +49,12 @@ exports.list = async (req, res) => {
   }
 };
 
+// -----------------------------------------------------------------------------
 // GET /api/reservations/:id
 // GET /api/catways/:id/reservations/:resId
+// FR : Récupère une réservation spécifique.
+// EN : Fetch a specific reservation.
+// -----------------------------------------------------------------------------
 exports.getOne = async (req, res) => {
   try {
     const reservationId = req.params.resId || req.params.id;
@@ -50,7 +64,8 @@ exports.getOne = async (req, res) => {
       return res.status(404).json({ error: 'Réservation introuvable' });
     }
 
-    // if nested route, ensure it belongs to that catway
+    // FR : Vérifie que la réservation appartient bien au catway si route imbriquée
+    // EN : Ensure the reservation belongs to the catway if nested route
     if (req.params && req.params.id) {
       const catwayNumber = parseInt(req.params.id, 10);
       if (reservation.catwayNumber !== catwayNumber) {
@@ -65,24 +80,30 @@ exports.getOne = async (req, res) => {
   }
 };
 
+// -----------------------------------------------------------------------------
 // POST /api/reservations
 // POST /api/catways/:id/reservations
+// FR : Crée une nouvelle réservation (avec vérification de chevauchement).
+// EN : Create a new reservation (with overlap check).
+// -----------------------------------------------------------------------------
 exports.create = async (req, res) => {
-  // validation errors
   if (sendValidationErrors(req, res)) return;
 
   try {
-    // catwayNumber can come from nested route or from body
     const catwayNumber = req.params.id ? parseInt(req.params.id, 10) : parseInt(req.body.catwayNumber, 10);
     const { clientName, boatName, startDate, endDate } = req.body;
 
     const start = new Date(startDate);
     const end = new Date(endDate);
+
+    // FR : Vérification de validité des dates
+    // EN : Check if dates are valid
     if (isNaN(start.getTime()) || isNaN(end.getTime()) || start >= end) {
       return res.status(422).json({ error: 'Dates invalides (start < end requis)' });
     }
 
-    // overlap check for the same catway
+    // FR : Vérifie si une réservation existe déjà pour cette période
+    // EN : Check if a reservation already exists for this period
     const overlap = await Reservation.findOne({
       catwayNumber,
       startDate: { $lte: end },
@@ -108,35 +129,41 @@ exports.create = async (req, res) => {
   }
 };
 
+// -----------------------------------------------------------------------------
 // PUT /api/reservations/:id
 // PUT /api/catways/:id/reservations/:resId
+// FR : Met à jour une réservation existante.
+// EN : Update an existing reservation.
+// -----------------------------------------------------------------------------
 exports.update = async (req, res) => {
   if (sendValidationErrors(req, res)) return;
 
   try {
     const reservationId = req.params.resId || req.params.id;
 
-    // Build partial update
+    // FR : Construction de l'objet partiel de mise à jour
+    // EN : Build partial update object
     const update = {};
     if (req.body.clientName !== undefined) update.clientName = String(req.body.clientName).trim();
     if (req.body.boatName !== undefined) update.boatName = String(req.body.boatName).trim();
     if (req.body.startDate !== undefined) update.startDate = new Date(req.body.startDate);
     if (req.body.endDate !== undefined) update.endDate = new Date(req.body.endDate);
 
-    // If nested route, force/lock the catwayNumber to the route param
+    // FR : Si route imbriquée → verrouille le catwayNumber
+    // EN : If nested route → lock catwayNumber to param
     if (req.params && req.params.id) {
       update.catwayNumber = parseInt(req.params.id, 10);
     } else if (req.body.catwayNumber !== undefined) {
       update.catwayNumber = parseInt(req.body.catwayNumber, 10);
     }
 
-    // Check we have a document
     const existing = await Reservation.findById(reservationId);
     if (!existing) {
       return res.status(404).json({ error: 'Réservation introuvable' });
     }
 
-    // If dates or catwayNumber change, check overlap (exclude current id)
+    // FR : Vérifie les dates et les conflits
+    // EN : Validate dates and conflicts
     const newCatway = update.catwayNumber ?? existing.catwayNumber;
     const newStart = update.startDate ?? existing.startDate;
     const newEnd = update.endDate ?? existing.endDate;
@@ -156,6 +183,8 @@ exports.update = async (req, res) => {
       return res.status(409).json({ error: 'Conflit : catway déjà réservé sur cette période' });
     }
 
+    // FR : Mise à jour des champs
+    // EN : Apply updates
     existing.catwayNumber = newCatway;
     existing.clientName = update.clientName ?? existing.clientName;
     existing.boatName = update.boatName ?? existing.boatName;
@@ -170,13 +199,18 @@ exports.update = async (req, res) => {
   }
 };
 
+// -----------------------------------------------------------------------------
 // DELETE /api/reservations/:id
 // DELETE /api/catways/:id/reservations/:resId
+// FR : Supprime une réservation existante.
+// EN : Delete an existing reservation.
+// -----------------------------------------------------------------------------
 exports.remove = async (req, res) => {
   try {
     const reservationId = req.params.resId || req.params.id;
 
-    // If nested, ensure it belongs to that catway
+    // FR : Vérifie l’appartenance au catway en route imbriquée
+    // EN : Ensure it belongs to the catway in nested route
     if (req.params && req.params.id) {
       const catwayNumber = parseInt(req.params.id, 10);
       const doc = await Reservation.findOne({ _id: reservationId, catwayNumber }).lean();
@@ -197,7 +231,11 @@ exports.remove = async (req, res) => {
   }
 };
 
+// -----------------------------------------------------------------------------
 // GET /api/reservations/availability?catwayNumber=5&start=YYYY-MM-DD&end=YYYY-MM-DD
+// FR : Vérifie la disponibilité d’un catway sur une période donnée.
+// EN : Check availability of a catway for a given period.
+// -----------------------------------------------------------------------------
 exports.availability = async (req, res) => {
   if (sendValidationErrors(req, res)) return;
 

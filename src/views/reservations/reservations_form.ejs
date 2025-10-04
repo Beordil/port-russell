@@ -1,0 +1,98 @@
+<!-- =========================================================
+     FR : Inclusion du header (barre de navigation principale)
+     EN : Include main header (navigation bar)
+     ========================================================= -->
+<%- include('../partials/header') %>
+
+<!-- =========================================================
+     FR : Titre dynamique : change selon création ou édition
+     EN : Dynamic title: changes depending on create or edit
+     ========================================================= -->
+<h1><%= item ? 'Modifier la réservation' : 'Nouvelle réservation' %></h1>
+
+<!-- =========================================================
+     FR : Formulaire principal pour créer ou modifier une réservation
+     EN : Main form for creating or editing a reservation
+     ========================================================= -->
+<form 
+  class="card" 
+  method="POST" 
+  action="<%= item ? '/ui/reservations/' + item._id + '/edit' : '/ui/reservations' %>"
+>
+  <!-- FR : Champ numéro de catway -->
+  <!-- EN : Catway number field -->
+  <label>Catway #</label>
+  <input 
+    type="number" 
+    name="catwayNumber" 
+    required 
+    min="1" 
+    value="<%= item ? item.catwayNumber : '' %>" 
+  />
+
+  <!-- FR : Nom du client -->
+  <!-- EN : Client name -->
+  <label>Client</label>
+  <input 
+    type="text" 
+    name="clientName" 
+    required 
+    minlength="2" 
+    maxlength="100" 
+    value="<%= item ? item.clientName : '' %>" 
+  />
+
+  <!-- FR : Nom du bateau -->
+  <!-- EN : Boat name -->
+  <label>Bateau</label>
+  <input 
+    type="text" 
+    name="boatName" 
+    required 
+    minlength="1" 
+    maxlength="100" 
+    value="<%= item ? item.boatName : '' %>" 
+  />
+
+  <!-- FR : Date de début de la réservation -->
+  <!-- EN : Reservation start date -->
+  <label>Date de début</label>
+  <input 
+    type="date" 
+    name="startDate" 
+    required 
+    value="<%= item ? new Date(item.startDate).toISOString().slice(0,10) : '' %>" 
+  />
+
+  <!-- FR : Date de fin de la réservation -->
+  <!-- EN : Reservation end date -->
+  <label>Date de fin</label>
+  <input 
+    type="date" 
+    name="endDate" 
+    required 
+    value="<%= item ? new Date(item.endDate).toISOString().slice(0,10) : '' %>" 
+  />
+
+  <!-- =========================================================
+       FR : Zone des boutons (en ligne, espacés)
+       EN : Button area (inline, spaced apart)
+       ========================================================= -->
+  <div style="display:flex; gap:8px; margin-top:8px;">
+    <!-- FR : Bouton principal (créer ou enregistrer) -->
+    <!-- EN : Main button (create or save) -->
+    <button class="btn" type="submit">
+      <%= item ? 'Enregistrer' : 'Créer' %>
+    </button>
+
+    <!-- FR : Bouton pour annuler et revenir à la liste -->
+    <!-- EN : Cancel button to go back to list -->
+    <a class="btn btn-secondary" href="/ui/reservations">Annuler</a>
+  </div>
+</form>
+
+<!-- =========================================================
+     FR : Inclusion du pied de page (fermeture du main / body)
+     EN : Include footer partial (closes main / body)
+     ========================================================= -->
+<%- include('../partials/footer') %>

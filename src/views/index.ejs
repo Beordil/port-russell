@@ -1,35 +1,75 @@
+<!-- =========================================================
+     FR : Page d’accueil — Port Russell
+     EN : Home page — Port Russell
+     ========================================================= -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
+
+  <!-- FR : Titre de la page / EN : Page title -->
   <title>Port Russell</title>
+
+  <!-- FR : Feuille de style principale / EN : Main stylesheet -->
   <link rel="stylesheet" href="/styles.css" />
 </head>
+
 <body>
+  <!-- =========================================================
+       FR : En-tête (Header)
+       EN : Header (Top navigation bar)
+       ========================================================= -->
   <header class="topbar">
     <nav class="nav">
-      <a href="/">Accueil</a>
-      <a href="/dashboard">Tableau de bord</a>
-      <a href="/docs" target="_blank" rel="noreferrer">Docs API (Swagger)</a>
+      <!-- Liens de navigation principaux -->
+      <a href="/">Accueil</a> <!-- FR : Retour accueil / EN : Back to home -->
+      <a href="/dashboard">Tableau de bord</a> <!-- FR : Tableau principal / EN : Main dashboard -->
+      <a href="/docs" target="_blank" rel="noreferrer">Docs API (Swagger)</a> <!-- FR : Documentation API / EN : API documentation -->
     </nav>
   </header>
-  <main class="container">
-    <h1>Port Russell</h1>
-    <p>Application de gestion des catways et réservations.</p>
 
-    <p>
-      <a href="/dashboard">➡️ Accéder au tableau de bord</a>
-    </p>
+  <!-- =========================================================
+       FR : Contenu principal centré
+       EN : Centered main content
+       ========================================================= -->
+  <main class="home-main">
+    <section class="home-hero">
+      <!-- =====================================================
+           FR : Texte d’introduction au-dessus du formulaire
+           EN : Centered text above the login form
+           ===================================================== -->
+      <div class="home-title">
+        <h1>Port Russell</h1>
+        <p>Application de gestion des catways et des réservations</p>
+      </div>
 
-    <form method="POST" action="/login" class="card" style="max-width:420px;">
-      <label>Email</label>
-      <input type="email" name="email" placeholder="vous@exemple.com" required />
+      <!-- =====================================================
+           FR : Formulaire de connexion utilisateur
+           EN : User login form
+           ===================================================== -->
+      <form method="POST" action="/login" class="card auth-card">
+        <!-- FR : Lien d’accès direct (utile pour tests sans login)
+             EN : Direct access link (useful for testing without login) -->
+        <div class="helper">
+          <a href="/dashboard">➡️ Accéder au tableau de bord</a>
+        </div>
 
-      <label>Mot de passe</label>
-      <input type="password" name="password" placeholder="••••••••" required />
+        <!-- FR : Champ email / EN : Email input -->
+        <div>
+          <label>Email</label>
+          <input type="email" name="email" placeholder="vous@exemple.com" required />
+        </div>
 
-      <button type="submit">Se connecter</button>
-    </form>
+        <!-- FR : Champ mot de passe / EN : Password input -->
+        <div>
+          <label>Mot de passe</label>
+          <input type="password" name="password" placeholder="••••••••" required />
+        </div>
+
+        <!-- FR : Bouton de connexion / EN : Submit (login) button -->
+        <button type="submit">Se connecter</button>
+      </form>
+    </section>
   </main>
 </body>
 </html>

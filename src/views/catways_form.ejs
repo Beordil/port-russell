@@ -1,33 +1,116 @@
-<%- include('header', { title: (mode === 'create' ? 'Nouveau catway' : 'Modifier catway') }) %>
-<header class="topbar">
-  <nav class="nav">
-    <a href="/">Accueil</a>
-    <a href="/dashboard">Tableau de bord</a>
-    <a href="/docs" target="_blank" rel="noreferrer">Docs API</a>
-    <% if (email) { %><span class="user">Connecté : <%= email %></span><a href="/logout">Se déconnecter</a><% } %>
-  </nav>
-</header>
+<!-- =========================================================
+     FR : Formulaire de création / modification d’un catway
+     EN : Form for creating or editing a catway
+     ========================================================= -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  
+  <!-- =========================================================
+       FR : Titre dynamique selon l’action (Créer / Modifier)
+       EN : Dynamic title depending on action (Create / Edit)
+       ========================================================= -->
+  <title><%= formTitle %> — Catway</title>
 
-<main class="container">
-  <h1><%= (mode === 'create') ? 'Créer un catway' : ('Modifier catway #' + item.catwayNumber) %></h1>
+  <!-- FR : Feuille de style principale / EN : Main stylesheet -->
+  <link rel="stylesheet" href="/styles.css" />
+</head>
 
-  <% if (error) { %><p class="alert"><%= error %></p><% } %>
+<body>
+  <!-- =========================================================
+       FR : Barre de navigation supérieure
+       EN : Top navigation bar
+       ========================================================= -->
+  <header class="topbar">
+    <nav class="nav">
+      <a href="/">Accueil</a>            <!-- FR : Lien vers l’accueil / EN : Home link -->
+      <a href="/dashboard">Tableau de bord</a>  <!-- FR : Dashboard / EN : Dashboard -->
+      <a href="/ui/catways">Catways</a>          <!-- FR : Retour liste catways / EN : Back to catways list -->
+      <div class="nav-spacer"></div>             <!-- FR : Espace flexible / EN : Spacer to push logout button -->
+      <a class="btn-logout" href="/logout">Se déconnecter</a> <!-- FR : Déconnexion / EN : Logout -->
+    </nav>
+  </header>
 
-  <form method="post" action="<%= (mode === 'create') ? '/ui/catways' : ('/ui/catways/' + item.catwayNumber + '/update') %>" class="card">
-    <% if (mode === 'create') { %>
-      <label>Numéro</label>
-      <input type="number" name="catwayNumber" value="<%= item.catwayNumber %>" min="1" required />
-    <% } %>
+  <!-- =========================================================
+       FR : Contenu principal
+       EN : Main content
+       ========================================================= -->
+  <main class="dashboard-main">
+    <!-- FR : Titre du formulaire / EN : Form title -->
+    <h1 class="dash-title"><%= formTitle %></h1>
 
-    <label>Type</label>
-    <select name="catwayType">
-      <option value="short" <%= item.catwayType === 'short' ? 'selected' : '' %>>short</option>
-      <option value="long"  <%= item.catwayType === 'long'  ? 'selected' : '' %>>long</option>
-    </select>
+    <!-- =========================================================
+         FR : Carte contenant le formulaire
+         EN : Card container for the form
+         ========================================================= -->
+    <section class="dash-card" style="max-width:700px;margin-inline:auto;">
 
-    <label>État</label>
-    <input type="text" name="catwayState" value="<%= item.catwayState %>" required />
+      <!-- =========================================================
+           FR : Début du formulaire
+           EN : Form start
+           ========================================================= -->
+      <form method="post" action="<%= action %>">
+        <div class="form-grid">
+          
+          <!-- =====================================================
+               FR : Champ numéro du catway
+               EN : Catway number field
+               ===================================================== -->
+          <div class="form-field">
+            <label>Numéro du catway</label>
+            <input type="number" 
+                   name="catwayNumber" 
+                   min="1" 
+                   required
+                   value="<%= catway?.catwayNumber ?? '' %>"
+                   <%= isEdit ? 'readonly' : '' %> />
+            <% if (isEdit) { %>
+              <p class="dash-muted">
+                Le numéro ne peut pas être modifié.
+                <!-- EN : The number cannot be changed -->
+              </p>
+            <% } %>
+          </div>
 
-    <button type="submit"><%= (mode === 'create') ? 'Créer' : 'Mettre à jour' %></button>
-  </form>
-</main>
+          <!-- =====================================================
+               FR : Champ du type (short / long)
+               EN : Type field (short / long)
+               ===================================================== -->
+          <div class="form-field">
+            <label>Type</label>
+            <select name="catwayType" required>
+              <option value="short" <%= catway?.catwayType==='short' ? 'selected' : '' %>>short</option>
+              <option value="long"  <%= catway?.catwayType==='long'  ? 'selected' : '' %>>long</option>
+            </select>
+          </div>
+
+          <!-- =====================================================
+               FR : Champ texte État du catway
+               EN : Catway state text area
+               ===================================================== -->
+          <div class="form-field form-col-2">
+            <label>État</label>
+            <textarea name="catwayState" 
+                      rows="3" 
+                      minlength="2" 
+                      maxlength="300" 
+                      required><%= catway?.catwayState ?? '' %></textarea>
+          </div>
+        </div>
+
+        <!-- =====================================================
+             FR : Boutons d’action (Annuler / Soumettre)
+             EN : Action buttons (Cancel / Submit)
+             ===================================================== -->
+        <div class="form-actions">
+          <a class="btn" href="/ui/catways">Annuler</a> <!-- FR : Retour sans sauvegarde / EN : Cancel and go back -->
+          <button class="btn btn-primary" type="submit">
+            <%= submitLabel %> <!-- FR : Texte dynamique : "Créer" ou "Mettre à jour" -->
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
