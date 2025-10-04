@@ -1,0 +1,33 @@
+<%- include('header', { title: (mode === 'create' ? 'Nouveau catway' : 'Modifier catway') }) %>
+<header class="topbar">
+  <nav class="nav">
+    <a href="/">Accueil</a>
+    <a href="/dashboard">Tableau de bord</a>
+    <a href="/docs" target="_blank" rel="noreferrer">Docs API</a>
+    <% if (email) { %><span class="user">Connecté : <%= email %></span><a href="/logout">Se déconnecter</a><% } %>
+  </nav>
+</header>
+
+<main class="container">
+  <h1><%= (mode === 'create') ? 'Créer un catway' : ('Modifier catway #' + item.catwayNumber) %></h1>
+
+  <% if (error) { %><p class="alert"><%= error %></p><% } %>
+
+  <form method="post" action="<%= (mode === 'create') ? '/ui/catways' : ('/ui/catways/' + item.catwayNumber + '/update') %>" class="card">
+    <% if (mode === 'create') { %>
+      <label>Numéro</label>
+      <input type="number" name="catwayNumber" value="<%= item.catwayNumber %>" min="1" required />
+    <% } %>
+
+    <label>Type</label>
+    <select name="catwayType">
+      <option value="short" <%= item.catwayType === 'short' ? 'selected' : '' %>>short</option>
+      <option value="long"  <%= item.catwayType === 'long'  ? 'selected' : '' %>>long</option>
+    </select>
+
+    <label>État</label>
+    <input type="text" name="catwayState" value="<%= item.catwayState %>" required />
+
+    <button type="submit"><%= (mode === 'create') ? 'Créer' : 'Mettre à jour' %></button>
+  </form>
+</main>
