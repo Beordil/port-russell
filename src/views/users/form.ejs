@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title><%= title %> — Port Russell</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav">
+      <a href="/">Accueil</a>
+      <a href="/dashboard">Tableau de bord</a>
+      <a href="/docs" target="_blank" rel="noreferrer">Docs API</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1><%= title %></h1>
+
+    <% if (error) { %>
+      <p class="alert"><%= error %></p>
+    <% } %>
+
+    <form method="post" action="<%= (mode === 'create') ? '/ui/users/new' : ('/ui/users/' + item._id + '/update') %>" class="card" style="max-width:420px;">
+      <label>Nom</label>
+      <input type="text" name="name" value="<%= item.name || '' %>" required />
+
+      <label>Email</label>
+      <input type="email" name="email" value="<%= item.email || '' %>" required />
+
+      <label>Rôle</label>
+      <select name="role">
+        <option value="user"  <%= item.role === 'user'  ? 'selected' : '' %>>user</option>
+        <option value="admin" <%= item.role === 'admin' ? 'selected' : '' %>>admin</option>
+      </select>
+
+      <button type="submit"><%= (mode === 'create') ? 'Créer' : 'Mettre à jour' %></button>
+    </form>
+  </main>
+</body>
+</html>

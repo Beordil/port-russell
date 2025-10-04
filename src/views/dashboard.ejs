@@ -5,17 +5,16 @@
   <title><%= title %> — Port Russell</title>
   <link rel="stylesheet" href="/styles.css" />
   <style>
-    /* Un peu de style si tu n'as rien dans /public/styles.css */
     .topbar { background:#0f172a; color:#fff; padding:12px 16px; }
     .nav a { color:#fff; margin-right:12px; text-decoration:none; }
     .container { max-width: 960px; margin: 24px auto; padding: 0 16px; }
     .grid { display:grid; gap:16px; grid-template-columns: 1fr 1fr; }
     .card { background:#fff; border:1px solid #e5e7eb; border-radius:8px; padding:16px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
     .muted { color:#6b7280; }
+    .tag { display:inline-block; padding:2px 8px; border-radius:999px; background:#e5f3ff; color:#074c8c; font-size:12px; }
     table { width:100%; border-collapse: collapse; }
     th, td { padding:10px 12px; border-bottom:1px solid #e5e7eb; text-align:left; }
     th { background:#f3f4f6; font-weight:600; }
-    .tag { display:inline-block; padding:2px 8px; border-radius:999px; background:#e5f3ff; color:#074c8c; font-size:12px; }
     .menu ul { padding-left:18px; margin: 8px 0 0; }
     .menu li { margin: 6px 0; }
   </style>
@@ -57,9 +56,9 @@
         <h2>Menu</h2>
         <ul>
           <li><a href="/docs" target="_blank" rel="noreferrer">📚 Documentation API (Swagger)</a></li>
-          <li><a href="#" onclick="alert('UI CRUD Catways à venir — utilisez Swagger pour l’instant'); return false;">🛠️ Catways — CRUD (UI à venir)</a></li>
-          <li><a href="#" onclick="alert('UI CRUD Réservations à venir — utilisez Swagger pour l’instant'); return false;">🛠️ Réservations — CRUD (UI à venir)</a></li>
-          <li><a href="#" onclick="alert('UI CRUD Utilisateurs à venir'); return false;">🛠️ Utilisateurs — CRUD (UI à venir)</a></li>
+          <li><a href="/ui/catways">🛶 Catways — CRUD (UI)</a></li>
+          <li><a href="/ui/reservations">📆 Réservations — CRUD (UI)</a></li>
+          <li><a href="/ui/users">👤 Utilisateurs — CRUD (UI)</a></li>
         </ul>
       </section>
     </div>
@@ -86,12 +85,8 @@
               <td><%= r.catwayNumber %></td>
               <td><%= r.clientName %></td>
               <td><%= r.boatName %></td>
-              <td>
-                <%= new Intl.DateTimeFormat('fr-FR', { dateStyle:'medium' }).format(new Date(r.startDate)) %>
-              </td>
-              <td>
-                <%= new Intl.DateTimeFormat('fr-FR', { dateStyle:'medium' }).format(new Date(r.endDate)) %>
-              </td>
+              <td><%= new Date(r.startDate).toLocaleDateString('fr-FR') %></td>
+              <td><%= new Date(r.endDate).toLocaleDateString('fr-FR') %></td>
             </tr>
           <% }) %>
           </tbody>

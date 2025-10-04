@@ -1,0 +1,35 @@
+<%- include('header', { title: 'Catways — CRUD' }) %>
+<header class="topbar">
+  <nav class="nav">
+    <a href="/">Accueil</a>
+    <a href="/dashboard">Tableau de bord</a>
+    <a href="/docs" target="_blank" rel="noreferrer">Docs API</a>
+    <% if (email) { %><span class="user">Connecté : <%= email %></span><a href="/logout">Se déconnecter</a><% } %>
+  </nav>
+</header>
+
+<main class="container">
+  <h1>Catways</h1>
+  <p><a class="btn" href="/ui/catways/new">+ Nouveau catway</a></p>
+
+  <table class="table">
+    <thead>
+      <tr><th>#</th><th>Type</th><th>État</th><th></th></tr>
+    </thead>
+    <tbody>
+      <% (items || []).forEach(c => { %>
+        <tr>
+          <td><strong><%= c.catwayNumber %></strong></td>
+          <td><%= c.catwayType %></td>
+          <td><%= c.catwayState %></td>
+          <td>
+            <a href="/ui/catways/<%= c.catwayNumber %>/edit">Modifier</a>
+            <form action="/ui/catways/<%= c.catwayNumber %>/delete" method="post" style="display:inline">
+              <button type="submit" onclick="return confirm('Supprimer ?')">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</main>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <title>Utilisateurs — Port Russell</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav">
+      <a href="/">Accueil</a>
+      <a href="/dashboard">Tableau de bord</a>
+      <a href="/docs" target="_blank" rel="noreferrer">Docs API</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h1>Utilisateurs</h1>
+
+    <p><a class="btn" href="/ui/users/new">+ Nouvel utilisateur</a></p>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Rôle</th>
+          <th style="width:140px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+      <% (items || []).forEach(u => { %>
+        <tr>
+          <td><%= u.name %></td>
+          <td><%= u.email %></td>
+          <td><%= u.role %></td>
+          <td>
+            <a href="/ui/users/<%= u._id %>/edit">Modifier</a>
+            <form action="/ui/users/<%= u._id %>/delete" method="post" style="display:inline">
+              <button type="submit" onclick="return confirm('Supprimer ?')">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+      </tbody>
+    </table>
+  </main>
+</body>
+</html>
